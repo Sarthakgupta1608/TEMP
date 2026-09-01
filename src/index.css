@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --font-heading: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -24,17 +26,18 @@
   --surface-card: 224 20% 10%;
   --surface-glass: 224 20% 10% / 0.70;
   --text-main: 210 20% 98%;
-  --text-muted: 215 15% 65%;
-  --border-color: 224 15% 18%;
+  --text-muted: 215 15% 75%;
+  --border-color: 224 15% 20%;
 
   --brand-primary: 215 90% 60%;
   --brand-coral: 14 95% 65%;
   --ai-glow: 270 85% 70%;
+  color-scheme: dark;
 }
 
 * {
   font-family: var(--font-body);
-  box-sizing: border-border;
+  box-sizing: border-box;
 }
 
 body {
@@ -46,8 +49,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.dark body {
+  background-color: #090d16;
+  color: #f8fafc;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+}
+
+/* Ensure Form Inputs, Selects & Options are High-Contrast in Dark Mode */
+.dark input,
+.dark select,
+.dark textarea {
+  color: #f8fafc !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.dark option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #94a3b8 !important;
 }
 
 /* Glassmorphism Utilities */
@@ -66,6 +93,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
 }
 
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(51, 65, 85, 0.7);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
 .glass-card-hover {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
@@ -76,8 +109,19 @@ h1, h2, h3, h4, h5, h6 {
   border-color: hsl(var(--brand-primary) / 0.4);
 }
 
+.dark .glass-card-hover:hover {
+  border-color: rgba(96, 165, 250, 0.6);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
 .ai-gradient-text {
-  background: linear-gradient(135deg, hsl(270, 85%, 65%), hsl(215, 90%, 60%), hsl(14, 95%, 65%));
+  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #f43f5e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .ai-gradient-text {
+  background: linear-gradient(135deg, #c084fc 0%, #60a5fa 50%, #fb7185 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
