@@ -20,9 +20,48 @@ import { TravellerDashboardPage } from './pages/TravellerDashboardPage';
 import { AgencyDashboardPage } from './pages/AgencyDashboardPage';
 import { AdminPanelPage } from './pages/AdminPanelPage';
 
+const VALID_ROUTES: PageRoute[] = [
+  'home', 'about', 'contact', 'blog', 'packages', 'destinations',
+  'become-agency', 'ai-planner', 'compare-quotes', 'login', 'signup',
+  'traveller-dashboard', 'agency-dashboard', 'admin-panel'
+];
+
+const getRouteFromHash = (): PageRoute => {
+  const hash = window.location.hash.replace(/^#\/?/, '');
+  return VALID_ROUTES.includes(hash as PageRoute) ? (hash as PageRoute) : 'home';
+};
+
 export function App() {
-  const [currentRoute, setCurrentRoute] = useState<PageRoute>('home');
+  const [currentRoute, setCurrentRouteState] = useState<PageRoute>(getRouteFromHash);
   const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  // Sync route with browser history (PushState & PopState for Undo / Redo Navigation)
+  const handleNavigate = (route: PageRoute) => {
+    setCurrentRouteState(route);
+    const targetHash = `#/${route}`;
+    if (window.location.hash !== targetHash) {
+      window.history.pushState({ route }, '', targetHash);
+    }
+  };
+
+  // Handle Browser Back / Forward (Undo / Redo navigation)
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const route = (e.state && e.state.route) ? e.state.route : getRouteFromHash();
+      setCurrentRouteState(route);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Set initial state if none exists
+    if (!window.history.state) {
+      window.history.replaceState({ route: currentRoute }, '', `#/${currentRoute}`);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   // Sync dark mode class on HTML document
   useEffect(() => {
@@ -125,7 +164,7 @@ export function App() {
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
-        <TravellerDashboardPage onNavigate={setCurrentRoute} />
+        <TravellerDashboardPage onNavigate={handleNavigate} />
       </>
     );
   }
@@ -134,7 +173,7 @@ export function App() {
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
-        <AgencyDashboardPage onNavigate={setCurrentRoute} />
+        <AgencyDashboardPage onNavigate={handleNavigate} />
       </>
     );
   }
@@ -143,7 +182,7 @@ export function App() {
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
-        <AdminPanelPage onNavigate={setCurrentRoute} />
+        <AdminPanelPage onNavigate={handleNavigate} />
       </>
     );
   }
@@ -157,28 +196,28 @@ export function App() {
       {/* Glassmorphism Header */}
       <Navbar
         currentRoute={currentRoute}
-        onNavigate={setCurrentRoute}
+        onNavigate={handleNavigate}
         darkMode={darkMode}
         onToggleDarkMode={handleToggleDarkMode}
       />
 
       {/* Main Content Router */}
       <main className="flex-grow">
-        {currentRoute === 'home' && <HomePage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'about' && <AboutPage onNavigate={setCurrentRoute} />}
+        {currentRoute === 'home' && <HomePage onNavigate={handleNavigate} />}
+        {currentRoute === 'about' && <AboutPage onNavigate={handleNavigate} />}
         {currentRoute === 'contact' && <ContactPage />}
         {currentRoute === 'blog' && <BlogPage />}
-        {currentRoute === 'packages' && <ExplorePackagesPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'destinations' && <DestinationsPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'become-agency' && <BecomeAgencyPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'ai-planner' && <AITripPlannerPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'compare-quotes' && <CompareQuotesPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'login' && <LoginPage onNavigate={setCurrentRoute} />}
-        {currentRoute === 'signup' && <SignupPage onNavigate={setCurrentRoute} />}
+        {currentRoute === 'packages' && <ExplorePackagesPage onNavigate={handleNavigate} />}
+        {currentRoute === 'destinations' && <DestinationsPage onNavigate={handleNavigate} />}
+        {currentRoute === 'become-agency' && <BecomeAgencyPage onNavigate={handleNavigate} />}
+        {currentRoute === 'ai-planner' && <AITripPlannerPage onNavigate={handleNavigate} />}
+        {currentRoute === 'compare-quotes' && <CompareQuotesPage onNavigate={handleNavigate} />}
+        {currentRoute === 'login' && <LoginPage onNavigate={handleNavigate} />}
+        {currentRoute === 'signup' && <SignupPage onNavigate={handleNavigate} />}
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={setCurrentRoute} />
+      <Footer onNavigate={handleNavigate} />
 
     </div>
   );
