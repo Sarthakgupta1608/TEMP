@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* HSL Light Mode Tokens */
+  --bg-primary: 220 20% 98%;
+  --surface-card: 0 0% 100%;
+  --surface-glass: 0 0% 100% / 0.75;
+  --text-main: 224 25% 12%;
+  --text-muted: 220 15% 45%;
+  --border-color: 220 15% 90%;
+  
+  --brand-primary: 215 85% 45%;
+  --brand-coral: 14 90% 58%;
+  --ai-glow: 270 80% 60%;
+}
+
+.dark {
+  /* HSL Dark Mode Tokens */
+  --bg-primary: 224 25% 6%;
+  --surface-card: 224 20% 10%;
+  --surface-glass: 224 20% 10% / 0.70;
+  --text-main: 210 20% 98%;
+  --text-muted: 215 15% 65%;
+  --border-color: 224 15% 18%;
+
+  --brand-primary: 215 90% 60%;
+  --brand-coral: 14 95% 65%;
+  --ai-glow: 270 85% 70%;
+}
+
+* {
+  font-family: var(--font-body);
+  box-sizing: border-border;
+}
+
+body {
+  background-color: hsl(var(--bg-primary));
+  color: hsl(var(--text-main));
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Glassmorphism Utilities */
+.glass-nav {
+  background: hsl(var(--surface-glass));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid hsl(var(--border-color));
+}
+
+.glass-card {
+  background: hsl(var(--surface-card) / 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border-color));
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
+  border-color: hsl(var(--brand-primary) / 0.4);
+}
+
+.ai-gradient-text {
+  background: linear-gradient(135deg, hsl(270, 85%, 65%), hsl(215, 90%, 60%), hsl(14, 95%, 65%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ai-gradient-bg {
+  background: linear-gradient(135deg, hsl(270, 80%, 55%), hsl(215, 85%, 50%));
+}
+
+.ai-glow-shadow {
+  box-shadow: 0 0 30px -5px rgba(168, 85, 247, 0.35);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--bg-primary));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--text-muted) / 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--brand-primary));
+}

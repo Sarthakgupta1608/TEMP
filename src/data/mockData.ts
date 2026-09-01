@@ -1,0 +1,340 @@
+import type { DestinationItem, PackageItem, QuoteItem, BlogPost, Testimonial, FAQItem } from '../types';
+
+export const DESTINATIONS: DestinationItem[] = [
+  {
+    id: 'dest-1',
+    name: 'Sikkim & Gangtok',
+    state: 'Sikkim',
+    tagline: 'Land of Mystical Monasteries & Alpine Lakes',
+    description: 'Explore Nathula Pass, Tsomgo Lake, Yumthang Valley of Flowers, and authentic Himalayan culture.',
+    heroImage: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
+    packageCount: 34,
+    agencyCount: 22,
+    startingPrice: 14999,
+    popularActivities: ['Tsomgo Lake Excursion', 'Yumthang Valley Safari', 'Gurudongmar Lake Trek', 'Rumtek Monastery Tour'],
+    bestTimeToVisit: 'March – June & Oct – Dec',
+    rating: 4.9,
+  },
+  {
+    id: 'dest-2',
+    name: 'Shimla & Kufri',
+    state: 'Himachal Pradesh',
+    tagline: 'Queen of the Hills & Colonial Elegance',
+    description: 'Walk through Mall Road, Jakhoo Temple, scenic Toy Train rides, and snow-capped Kufri peaks.',
+    heroImage: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=1200&q=80',
+    packageCount: 42,
+    agencyCount: 28,
+    startingPrice: 11999,
+    popularActivities: ['Kufri Snow Sports', 'Mall Road Heritage Walk', 'Toy Train Experience', 'Chail Palace Excursion'],
+    bestTimeToVisit: 'October – June',
+    rating: 4.8,
+  },
+  {
+    id: 'dest-3',
+    name: 'Manali & Solang Valley',
+    state: 'Himachal Pradesh',
+    tagline: 'Adventure Capital of the Indian Himalayas',
+    description: 'Paragliding in Solang, Rohtang Pass snow point, Manikaran Sahib, and Old Manali cafes.',
+    heroImage: 'https://images.unsplash.com/photo-1597074866923-dc0589150358?auto=format&fit=crop&w=1200&q=80',
+    packageCount: 56,
+    agencyCount: 35,
+    startingPrice: 13500,
+    popularActivities: ['Rohtang Pass Snow Drive', 'Paragliding in Solang', 'Atal Tunnel Expedition', 'Hadimba Temple Visit'],
+    bestTimeToVisit: 'Year-round',
+    rating: 4.9,
+  },
+  {
+    id: 'dest-4',
+    name: 'Leh Ladakh',
+    state: 'Ladakh',
+    tagline: 'High Passes, Pangong Tso & Monastic Tranquility',
+    description: 'Drive through Khardung La, camel safari in Nubra Valley, and starry night camping at Pangong Lake.',
+    heroImage: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1200&q=80',
+    packageCount: 29,
+    agencyCount: 18,
+    startingPrice: 21999,
+    popularActivities: ['Pangong Lake Camping', 'Khardungla Pass Drive', 'Nubra Valley Camel Ride', 'Magnetic Hill'],
+    bestTimeToVisit: 'May – September',
+    rating: 4.95,
+  },
+];
+
+export const PACKAGES: PackageItem[] = [
+  {
+    id: 'pkg-1',
+    title: '5D/4N Enchanting Sikkim & Nathula Expedition',
+    agencyName: 'Himalayan Footprints Tours',
+    agencyLogo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.9,
+    agencyReviews: 128,
+    destination: 'Sikkim & Gangtok',
+    durationDays: 5,
+    durationNights: 4,
+    pricePerPerson: 16500,
+    originalPrice: 19999,
+    coverImage: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Nathula Pass Permit Included', '4-Star Mountain View Resort', 'Private SUV Transfer', 'Tsomgo Lake & Baba Mandir'],
+    includedAccommodations: '4-Star Mountain View Resort in Gangtok',
+    includedMeals: 'Daily Breakfast & Dinner',
+    transportType: 'Private Innova / Xylo SUV',
+    isFeatured: true,
+  },
+  {
+    id: 'pkg-2',
+    title: '4D/3N Royal Shimla Heritage & Kufri Retreat',
+    agencyName: 'Pine Peak Travels Shimla',
+    agencyLogo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.85,
+    agencyReviews: 94,
+    destination: 'Shimla & Kufri',
+    durationDays: 4,
+    durationNights: 3,
+    pricePerPerson: 12499,
+    originalPrice: 14999,
+    coverImage: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Heritage Resort Stay', 'Kufri Fun World Activity Vouchers', 'Mall Road Guided Walk', 'Bonfire Night'],
+    includedAccommodations: 'Classic Heritage Hotel near Ridge',
+    includedMeals: 'All Breakfasts',
+    transportType: 'Private Sedan (Dzire / Etios)',
+    isFeatured: true,
+  },
+  {
+    id: 'pkg-3',
+    title: '7D/6N Ultimate North Sikkim & Lachung Valley',
+    agencyName: 'Gangtok Local Escapes',
+    agencyLogo: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.92,
+    agencyReviews: 210,
+    destination: 'Sikkim & Gangtok',
+    durationDays: 7,
+    durationNights: 6,
+    pricePerPerson: 24500,
+    originalPrice: 28999,
+    coverImage: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Yumthang Valley Zero Point', 'Gurudongmar Lake', 'Lachen & Lachung Homestay', 'Permits & All Meals Included'],
+    includedAccommodations: 'Premium Hotels + Local Homestays',
+    includedMeals: 'All Meals (Breakfast, Lunch, Dinner)',
+    transportType: '4x4 Scorpio / Bolero for North Sikkim',
+    isFeatured: true,
+  },
+  {
+    id: 'pkg-4',
+    title: '6D/5N Shimla, Kullu & Manali Scenic Tour',
+    agencyName: 'Himachal Volvo Expeditions',
+    agencyLogo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.78,
+    agencyReviews: 165,
+    destination: 'Shimla & Kufri',
+    durationDays: 6,
+    durationNights: 5,
+    pricePerPerson: 15999,
+    originalPrice: 18999,
+    coverImage: 'https://images.unsplash.com/photo-1597074866923-dc0589150358?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Luxury Volvo Delhi-Shimla-Manali', 'River Rafting in Kullu', 'Rohtang Pass Trip', 'Manikaran Sahib Visit'],
+    includedAccommodations: '3-Star Deluxe Hotels',
+    includedMeals: 'Breakfast & Dinner',
+    transportType: 'Volvo AC Bus + Local Cab',
+    isFeatured: false,
+  },
+];
+
+export const QUOTES: QuoteItem[] = [
+  {
+    id: 'quote-1',
+    agencyId: 'agency-101',
+    agencyName: 'Himalayan Footprints Local Agency',
+    agencyLogo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.9,
+    agencyReviews: 142,
+    verifiedLocal: true,
+    totalPrice: 42000,
+    pricePerPerson: 14000,
+    hotelCategory: '4-Star Mountain View Resort',
+    hotelNames: ['Elgin Nor-Khill Gangtok', 'Lachung Retreat'],
+    vehicleType: 'Private Toyota Innova Crysta (Dedicated Driver)',
+    includedMeals: ['Daily Buffet Breakfast', 'Traditional Sikkimese Welcome Dinner'],
+    includedActivities: ['Nathula Pass Protected Area Permit', 'Tsomgo Lake Excursion', 'Cable Car Pass in Gangtok'],
+    excludedItems: ['Personal shopping & tips', 'Zero Point extra vehicle charge (Rs. 3000 if opted)'],
+    cancellationPolicy: '100% Refund if cancelled 7 days prior to travel date',
+    aiMatchScore: 96,
+    aiRecommendationReason: 'Best overall value match. Offers verified 4-star mountain view rooms, dedicated Innova Crysta transport, and includes Nathula permits at no hidden cost.',
+    itinerary: [
+      { day: 1, title: 'Arrival in NJP/Bagdogra to Gangtok', desc: 'Warm local reception, scenic river drive along Teesta, check-in at Elgin Nor-Khill.' },
+      { day: 2, title: 'Excursion to Tsomgo Lake & Nathula Pass', desc: 'Visit high-altitude Tsomgo Lake (12,400 ft) and historic Silk Route border post.' },
+      { day: 3, title: 'Gangtok Sightseeing to Lachung', desc: 'Visit Rumtek Monastery, Seven Sisters Waterfall, evening check-in at Lachung.' },
+      { day: 4, title: 'Yumthang Valley of Flowers & return to Gangtok', desc: 'Explore hot springs and alpine meadows, evening free for MG Marg shopping.' }
+    ],
+  },
+  {
+    id: 'quote-2',
+    agencyId: 'agency-102',
+    agencyName: 'Kanchenjunga Local Escapes',
+    agencyLogo: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.82,
+    agencyReviews: 88,
+    verifiedLocal: true,
+    totalPrice: 37500,
+    pricePerPerson: 12500,
+    hotelCategory: '3-Star Deluxe Boutique Hotel',
+    hotelNames: ['Hotel Summit Golden Crest Gangtok'],
+    vehicleType: 'Private Mahindra Xylo',
+    includedMeals: ['Daily Breakfast'],
+    includedActivities: ['Tsomgo Lake & Baba Mandir Tour', 'Gangtok 7-point Local Sightseeing'],
+    excludedItems: ['Nathula Pass Permit (Rs. 1500/head extra)', 'Dinner meals', 'Monument entry fees'],
+    cancellationPolicy: '80% Refund 5 days before travel',
+    aiMatchScore: 89,
+    aiRecommendationReason: 'Budget-friendly option. Good for travellers who prefer exploring local dining options on MG Marg independently.',
+    itinerary: [
+      { day: 1, title: 'Bagdogra Pick-up to Gangtok', desc: 'Transfer in Xylo SUV, evening walk at MG Marg.' },
+      { day: 2, title: 'Tsomgo Lake & Baba Mandir', desc: 'Full day excursion to glacial lake and legendary shrine.' },
+      { day: 3, title: 'Gangtok Local Attractions', desc: 'Ganesh Tok, Hanuman Tok, Ban Jhakri Falls, Ropeway ride.' },
+      { day: 4, title: 'Departure Transfer', desc: 'Drop off at Bagdogra airport with sweet Sikkimese tea souvenir.' }
+    ],
+  },
+  {
+    id: 'quote-3',
+    agencyId: 'agency-103',
+    agencyName: 'Royal Silk Route Voyages',
+    agencyLogo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    agencyRating: 4.95,
+    agencyReviews: 196,
+    verifiedLocal: true,
+    totalPrice: 51000,
+    pricePerPerson: 17000,
+    hotelCategory: '5-Star Luxury Heritage Property',
+    hotelNames: ['Mayfair Spa Resort & Casino Gangtok'],
+    vehicleType: 'Luxury Mercedes Benz V-Class / Fortuner',
+    includedMeals: ['Full Board (Breakfast, Gourmet Lunch & Dinner)'],
+    includedActivities: ['VIP Fast-track Nathula Permit', 'Private Monastery Tea Ceremony', 'Helicopter City Flyover'],
+    excludedItems: ['Casino chip credits', 'Spa treatments'],
+    cancellationPolicy: 'Flexi-Cancel: 100% Refund up to 48 hours before arrival',
+    aiMatchScore: 92,
+    aiRecommendationReason: 'Ultra-luxury experience. Ideal for honeymooners and luxury seekers desiring 5-star spa amenities and VIP transfers.',
+    itinerary: [
+      { day: 1, title: 'VIP Arrival at Mayfair Resort', desc: 'Welcome ceremony, private butler check-in, evening spa session.' },
+      { day: 2, title: 'Private Helicopter & Nathula Pass', desc: 'Scenic flyover of Kanchenjunga peak followed by private luxury SUV tour.' },
+      { day: 3, title: 'Monastery Blessings & Private Chef Dinner', desc: 'Exclusive access to Rumtek monks tea session and customized multi-course dinner.' },
+      { day: 4, title: 'Luxury Departure Transfer', desc: 'Chauffeur transfer back to Bagdogra.' }
+    ],
+  },
+];
+
+export const BLOG_POSTS: BlogPost[] = [
+  {
+    id: 'blog-1',
+    title: 'Why Booking Through Verified Local Agencies Saves 30% on Sikkim Trips',
+    slug: 'local-agencies-sikkim-savings',
+    category: 'Travel Advice',
+    readTime: '5 min read',
+    publishedDate: 'August 2, 2026',
+    excerpt: 'Middleman travel portals mark up local prices by up to 40%. Discover how Traveller connects you directly with native agency operators in Gangtok.',
+    content: 'When planning a trip to Sikkim, most travellers use big OTA aggregators. What they don\'t realize is that these platforms sub-contract the work to local Sikkimese tour operators while taking a hefty 35% commission fee. By booking directly with verified local agencies on Traveller, you cut out middleman fees, secure guaranteed permits for Nathula Pass without hassle, and support the local mountain economy directly.',
+    coverImage: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Priya Sharma',
+      role: 'Head of Destination Curation',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'
+    }
+  },
+  {
+    id: 'blog-2',
+    title: 'The Ultimate Shimla & Kufri Winter Itinerary (2026 Guide)',
+    slug: 'ultimate-shimla-kufri-winter-guide',
+    category: 'Destinations',
+    readTime: '7 min read',
+    publishedDate: 'July 28, 2026',
+    excerpt: 'From colonial Mall Road walks to snow-tubing in Kufri, here is your step-by-step 4-day winter itinerary with local food recommendations.',
+    content: 'Shimla in winter is magic covered in white. In this guide, we break down the secret viewpoints away from crowd traps, the best bakery on Mall Road for hot plum cake, and how to get Toy Train seats reserved without waiting in 3-hour queues.',
+    coverImage: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Vikram Dorjee',
+      role: 'Himalayan Expedition Specialist',
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80'
+    }
+  },
+  {
+    id: 'blog-3',
+    title: 'How Our AI Engine Compares Complex Travel Quotations in Seconds',
+    slug: 'how-ai-quote-comparison-works',
+    category: 'Product & AI',
+    readTime: '4 min read',
+    publishedDate: 'July 15, 2026',
+    excerpt: 'Comparing 5 different PDF quotes with hidden taxes, different vehicle types, and hotel categories used to take hours. See how AI simplifies it.',
+    content: 'Comparing travel quotations is notoriously difficult. One agency includes dinner while another charges extra for Nathula permits. Our AI extracts line-item pricing, normalizes hotel star ratings, checks vehicle model guarantees, and presents a transparent side-by-side comparison grid.',
+    coverImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Aarav Mehta',
+      role: 'Lead AI Engineer',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+    }
+  }
+];
+
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: 'test-1',
+    name: 'Ananya & Rohan Verma',
+    location: 'Mumbai, India',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    tripName: 'Sikkim 6-Day Honeymoon',
+    agencyBooked: 'Himalayan Footprints',
+    quoteSaved: 'Saved ₹14,200',
+    rating: 5,
+    comment: 'We submitted our trip request on Traveller and received 4 custom quotes within 2 hours! The AI comparison clearly showed which agency included Nathula permits and private Innova transport. Flawless experience!'
+  },
+  {
+    id: 'test-2',
+    name: 'Dr. Sameer Kulkarni',
+    location: 'Pune, India',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    tripName: 'Shimla Family Reunion (8 Pax)',
+    agencyBooked: 'Pine Peak Travels',
+    quoteSaved: 'Saved ₹18,500',
+    rating: 5,
+    comment: 'Booking for an 8-member family with elderly parents needed very specific hotel amenities and driver patience. The local agency delivered 100% of what was quoted. Will never use generic portals again.'
+  },
+  {
+    id: 'test-3',
+    name: 'Neha Roy',
+    location: 'Bengaluru, India',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+    tripName: 'Solo North Sikkim Expedition',
+    agencyBooked: 'Gangtok Local Escapes',
+    quoteSaved: 'Saved ₹9,800',
+    rating: 5,
+    comment: 'As a solo female traveller, safety and verified local guides were my #1 priority. Traveller verified the agency’s credentials and KYC. Unforgettable trip to Yumthang Valley!'
+  }
+];
+
+export const FAQS: FAQItem[] = [
+  {
+    id: 'faq-1',
+    question: 'How does Traveller differ from standard travel websites like MakeMyTrip or Goibibo?',
+    answer: 'Traditional travel websites are middleman aggregators that sell pre-packaged, non-negotiable itineraries and take 30%+ commissions. Traveller is an AI marketplace where you post your customized trip requirements, and verified local destination agencies compete to give you their best direct transparent quotation.',
+    category: 'travellers'
+  },
+  {
+    id: 'faq-2',
+    question: 'Are the local agencies on Traveller verified and licensed?',
+    answer: 'Yes! Every local agency must pass our strict 4-step KYC audit: Government Tourism Registration verification, GST/Tax validation, local physical office audit, and minimum 4.5+ star track record before they can submit quotes.',
+    category: 'agencies'
+  },
+  {
+    id: 'faq-3',
+    question: 'How does the AI Quote Comparison work?',
+    answer: 'Once agencies submit their quotes, our AI engine reads each itemized quote—analyzing hotel star categories, vehicle models (Innova vs Dzire), meal inclusions, permit fees, and cancellation terms—to present a clear, side-by-side comparison grid with value ratings.',
+    category: 'ai'
+  },
+  {
+    id: 'faq-4',
+    question: 'Is my payment safe when booking an agency quotation?',
+    answer: '100% safe. Payments are held securely in Traveller Escrow via Razorpay. Money is only disbursed to the local agency after your trip successfully commences and you check into your hotel.',
+    category: 'payments'
+  },
+  {
+    id: 'faq-5',
+    question: 'How can a travel agency register to receive destination leads?',
+    answer: 'Travel agencies can click "Become an Agency" in the menu, upload their business registration and GST documents, select their operational regions (e.g. Sikkim or Shimla), and start receiving direct customer trip requests immediately upon admin verification.',
+    category: 'agencies'
+  }
+];
