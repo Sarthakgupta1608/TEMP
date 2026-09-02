@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { PageRoute } from '../types';
 import { Sparkles, MapPin, Users, Hotel, CheckCircle2, ArrowRight, Layers, Bot, Cpu } from 'lucide-react';
+import { ApiClient } from '../services/apiClient';
 
 interface AITripPlannerPageProps {
   onNavigate: (route: PageRoute) => void;
@@ -24,12 +25,11 @@ export const AITripPlannerPage: React.FC<AITripPlannerPageProps> = ({ onNavigate
     specialNote: 'Traveling for wedding anniversary. Prefer peaceful resort with balcony mountain view.',
   });
 
-  const handleRunAI = () => {
+  const handleRunAI = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setAiComplete(true);
-    }, 2000);
+    await ApiClient.createTripRequest(tripData);
+    setIsProcessing(false);
+    setAiComplete(true);
   };
 
   return (

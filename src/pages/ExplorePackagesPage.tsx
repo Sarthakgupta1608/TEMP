@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PACKAGES } from '../data/mockData';
 import type { PackageItem, PageRoute } from '../types';
 import { Package, Star, CheckCircle2, ArrowRight, X } from 'lucide-react';
+import { ApiClient } from '../services/apiClient';
 
 interface ExplorePackagesPageProps {
   onNavigate: (route: PageRoute) => void;
@@ -11,8 +12,19 @@ export const ExplorePackagesPage: React.FC<ExplorePackagesPageProps> = ({ onNavi
   const [selectedDestination, setSelectedDestination] = useState<string>('All');
   const [maxPrice, setMaxPrice] = useState<number>(30000);
   const [selectedPkg, setSelectedPkg] = useState<PackageItem | null>(null);
+  const [packageList, setPackageList] = useState<PackageItem[]>(PACKAGES);
 
-  const filteredPackages = PACKAGES.filter((pkg) => {
+  useEffect(() => {
+    let isMounted = true;
+    ApiClient.fetchPackages(selectedDestination, maxPrice).then((data) => {
+      if (isMounted && Array.isArray(data)) {
+        setPackageList(data);
+      }
+    });
+    return () => { isMounted = false; };
+  }, [selectedDestination, maxPrice]);
+
+  const filteredPackages = packageList.filter((pkg) => {
     const matchesDest = selectedDestination === 'All' || pkg.destination.includes(selectedDestination);
     const matchesPrice = pkg.pricePerPerson <= maxPrice;
     return matchesDest && matchesPrice;

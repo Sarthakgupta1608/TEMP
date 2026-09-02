@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QUOTES } from '../data/mockData';
 import type { QuoteItem, PageRoute } from '../types';
 import { 
@@ -13,16 +13,31 @@ import {
   X,
   Check
 } from 'lucide-react';
+import { ApiClient } from '../services/apiClient';
 
 interface CompareQuotesPageProps {
   onNavigate: (route: PageRoute) => void;
 }
 
 export const CompareQuotesPage: React.FC<CompareQuotesPageProps> = ({ onNavigate }) => {
+  const [quoteList, setQuoteList] = useState<QuoteItem[]>(QUOTES);
   const [selectedQuoteForBooking, setSelectedQuoteForBooking] = useState<QuoteItem | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<boolean>(false);
 
-  const handleCompleteBooking = () => {
+  useEffect(() => {
+    let isMounted = true;
+    ApiClient.fetchQuotesForRequest().then((data) => {
+      if (isMounted && Array.isArray(data)) {
+        setQuoteList(data);
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const handleCompleteBooking = async () => {
+    if (selectedQuoteForBooking) {
+      await ApiClient.createAndVerifyBooking(selectedQuoteForBooking.id, selectedQuoteForBooking.totalPrice);
+    }
     setBookingSuccess(true);
   };
 
@@ -44,7 +59,7 @@ export const CompareQuotesPage: React.FC<CompareQuotesPageProps> = ({ onNavigate
 
       {/* SIDE-BY-SIDE QUOTE COMPARISON GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {QUOTES.map((quote) => {
+        {quoteList.map((quote) => {
           const isBestValue = quote.aiMatchScore >= 95;
           return (
             <div
