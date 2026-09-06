@@ -1,4 +1,4 @@
-import { DESTINATIONS, PACKAGES, QUOTES, BLOG_POSTS, FAQS, TESTIMONIALS } from '../data/mockData';
+import { DESTINATIONS, PACKAGES, QUOTES } from '../data/mockData';
 
 const API_BASE_URL = 'http://localhost:5000/api/v1';
 
@@ -131,5 +131,56 @@ export class ApiClient {
       console.warn('⚠️ Backend login API offline, simulating auth.');
     }
     return { user: { email: credentials.email, role: 'TRAVELLER' } };
+  }
+
+  // 7. Agency Lead Inbox API
+  static async fetchAgencyLeads() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/agency/leads`, { headers: this.getHeaders() });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('⚠️ API offline, using fallback.');
+    }
+    return [];
+  }
+
+  // 8. Agency Wallet Payout API
+  static async requestAgencyPayout(amount: number) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/agency/payouts`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ amount }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('⚠️ API offline, simulating payout.');
+    }
+    return { balance: 156000, escrowHold: 42000 };
+  }
+
+  // 9. Admin Analytics API
+  static async fetchAdminAnalytics() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/analytics`, { headers: this.getHeaders() });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('⚠️ API offline, fallback stats.');
+    }
+    return {
+      totalGmv: 4850000.0,
+      platformFeeEarned: 485000.0,
+      totalUsers: 1240,
+      verifiedAgencies: 52,
+    };
   }
 }
