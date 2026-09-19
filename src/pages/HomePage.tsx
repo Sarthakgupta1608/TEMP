@@ -31,88 +31,91 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     <div className="space-y-24 pb-20">
       
       {/* HERO SECTION */}
-      <section className="relative pt-12 pb-20 overflow-hidden">
-        {/* Ambient Gradient Background Blur */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-blue-500/20 via-indigo-500/20 to-rose-500/20 blur-[120px] rounded-full -z-10 pointer-events-none" />
+      <section className="relative pt-8 pb-16 overflow-hidden">
+        {/* Ambient Soft Light Gradient Background Blur */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[950px] h-[500px] bg-gradient-to-tr from-rose-300/30 via-indigo-200/40 to-sky-300/30 blur-[140px] rounded-full -z-10 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
           
-          {/* Pilot Launch Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-blue-500/30 text-xs font-semibold text-blue-600 dark:text-blue-400 shadow-sm animate-pulse">
-            <Sparkles className="w-4 h-4 text-purple-500" />
-            <span>Pilot Launching in <strong>Sikkim</strong> & <strong>Shimla</strong></span>
-            <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[10px] uppercase font-bold">Live</span>
+          {/* Fresh Light Startup Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 dark:bg-slate-900/80 border border-rose-200 dark:border-rose-500/30 text-xs font-bold text-rose-600 dark:text-rose-400 shadow-md shadow-rose-500/5 backdrop-blur-md">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
+            <span>AI-Powered Local Travel Marketplace • <strong>Zero Commission Markups</strong></span>
+            <span className="bg-gradient-to-r from-rose-500 to-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold shadow-sm">Live</span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white max-w-4xl mx-auto leading-[1.1]">
-            Stop Paying Middleman Fees.{' '}
-            <span className="ai-gradient-text">Book Directly</span> with Local Agencies.
+          {/* Iconic Brand Main Title */}
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight max-w-4xl mx-auto leading-[1.05]">
+            <span className="bg-gradient-to-r from-rose-500 via-purple-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">TRAVELLER</span>
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-normal leading-relaxed">
-            Post your custom trip request. Get transparent competitive quotes from verified local travel agencies. Compared & summarized by AI.
+          {/* New Subtitle */}
+          <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
+            Skip agency markups. Describe your dream itinerary in seconds, get transparent itemized quotes directly from verified mountain travel experts, compared & summarized by AI.
           </p>
 
           {/* AIRBNB-STYLE SEARCH & AI WIZARD CARD */}
-          <div className="max-w-4xl mx-auto pt-4">
-            <div className="glass-card rounded-3xl p-3 sm:p-4 shadow-2xl border-gray-200/80 dark:border-gray-800">
+          <div className="max-w-4xl mx-auto pt-2">
+            <div className="glass-card rounded-3xl p-3 sm:p-4 shadow-2xl border-slate-200/90 dark:border-slate-800">
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
                 
                 {/* Destination Dropdown */}
-                <div className="p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/80 text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <label className="block text-[11px] uppercase font-extrabold text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-blue-500" /> Destination
+                <div className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 text-left hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
+                  <label className="block text-[11px] uppercase font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-rose-500" /> Destination
                   </label>
                   <select 
                     value={selectedDest} 
                     onChange={(e) => setSelectedDest(e.target.value)}
-                    className="w-full bg-transparent font-bold text-gray-900 dark:text-white text-sm focus:outline-none cursor-pointer mt-1"
+                    className="w-full bg-transparent font-bold text-slate-900 dark:text-white text-sm focus:outline-none cursor-pointer mt-1"
                   >
-                    <option value="Sikkim & Gangtok" className="dark:bg-gray-900">Sikkim & Gangtok</option>
-                    <option value="Shimla & Kufri" className="dark:bg-gray-900">Shimla & Kufri</option>
-                    <option value="Manali & Solang" className="dark:bg-gray-900">Manali & Solang</option>
-                    <option value="Leh Ladakh" className="dark:bg-gray-900">Leh Ladakh</option>
+                    <option value="Sikkim & Gangtok" className="dark:bg-slate-900">Sikkim & Gangtok</option>
+                    <option value="Shimla & Kufri" className="dark:bg-slate-900">Shimla & Kufri</option>
+                    <option value="Manali & Solang" className="dark:bg-slate-900">Manali & Solang</option>
+                    <option value="Leh Ladakh" className="dark:bg-slate-900">Leh Ladakh</option>
                   </select>
                 </div>
 
                 {/* Dates Picker Simulation */}
-                <div className="p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/80 text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <label className="block text-[11px] uppercase font-extrabold text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                    <CalendarDays className="w-3.5 h-3.5 text-indigo-500" /> Travel Dates
+                <div className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 text-left hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
+                  <label className="block text-[11px] uppercase font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <CalendarDays className="w-3.5 h-3.5 text-blue-500" /> Travel Dates
                   </label>
-                  <span className="block font-bold text-gray-900 dark:text-white text-sm mt-1">
+                  <span className="block font-bold text-slate-900 dark:text-white text-sm mt-1">
                     Flexible / Oct 2026
                   </span>
                 </div>
 
                 {/* Travellers Selector */}
-                <div className="p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/80 text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <label className="block text-[11px] uppercase font-extrabold text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5 text-rose-500" /> Travellers
+                <div className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 text-left hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
+                  <label className="block text-[11px] uppercase font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-purple-500" /> Travellers
                   </label>
                   <select 
                     value={travelerCount} 
                     onChange={(e) => setTravelerCount(e.target.value)}
-                    className="w-full bg-transparent font-bold text-gray-900 dark:text-white text-sm focus:outline-none cursor-pointer mt-1"
+                    className="w-full bg-transparent font-bold text-slate-900 dark:text-white text-sm focus:outline-none cursor-pointer mt-1"
                   >
-                    <option value="1 Traveller" className="dark:bg-gray-900">Solo Traveller</option>
-                    <option value="2 Travellers" className="dark:bg-gray-900">Couple (2 Pax)</option>
-                    <option value="4 Travellers" className="dark:bg-gray-900">Family (4 Pax)</option>
-                    <option value="8+ Travellers" className="dark:bg-gray-900">Group (8+ Pax)</option>
+                    <option value="1 Traveller" className="dark:bg-slate-900">Solo Traveller</option>
+                    <option value="2 Travellers" className="dark:bg-slate-900">Couple (2 Pax)</option>
+                    <option value="4 Travellers" className="dark:bg-slate-900">Family (4 Pax)</option>
+                    <option value="8+ Travellers" className="dark:bg-slate-900">Group (8+ Pax)</option>
                   </select>
                 </div>
 
                 {/* AI Trip Request CTA Button */}
                 <button
                   onClick={() => onNavigate('ai-planner')}
-                  className="w-full h-full py-4 px-6 rounded-2xl text-white font-bold text-sm ai-gradient-bg hover:opacity-95 shadow-xl shadow-purple-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 group"
+                  className="w-full h-full py-4 px-6 rounded-2xl text-white font-extrabold text-sm btn-primary-glow active:scale-95 transition-all flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <Sparkles className="w-5 h-5 text-yellow-300 group-hover:rotate-12 transition-transform" />
+                  <Sparkles className="w-5 h-5 text-amber-300 group-hover:rotate-12 transition-transform" />
                   <span>Start AI Trip Request</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 
               </div>
@@ -121,18 +124,22 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Social Proof Counters */}
-          <div className="pt-6 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-sm text-gray-600 dark:text-gray-400">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" />
+          <div className="pt-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
               <span><strong>50+</strong> Verified Agencies</span>
             </div>
-            <div className="flex items-center gap-2">
-              <TrendingDown className="w-5 h-5 text-rose-500" />
-              <span>Avg. <strong>30% Savings</strong> vs OTAs</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <TrendingDown className="w-4 h-4 text-rose-500" />
+              <span>Save <strong>₹45L+</strong> Middleman Fees</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-500" />
-              <span><strong>4.9/5</strong> Customer Rating</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <Award className="w-4 h-4 text-amber-500" />
+              <span><strong>4.9/5</strong> Rating (140+ Reviews)</span>
+            </div>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <CheckCircle2 className="w-4 h-4 text-blue-500" />
+              <span><strong>100%</strong> Escrow Protected</span>
             </div>
           </div>
 
