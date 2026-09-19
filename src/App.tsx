@@ -3,6 +3,7 @@ import type { PageRoute } from './types';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { SEOHead } from './components/layout/SEOHead';
+import { AIChatbotWidget } from './components/layout/AIChatbotWidget';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -218,6 +219,9 @@ export function App() {
 
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />
+
+      {/* Floating 24/7 AI Travel Support Chatbot Widget */}
+      <AIChatbotWidget onNavigate={handleNavigate} />
 
     </div>
   );

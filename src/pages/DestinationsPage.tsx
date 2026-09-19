@@ -1,32 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DESTINATIONS } from '../data/mockData';
 import type { PageRoute } from '../types';
-import { MapPin, Calendar, Star, Sparkles } from 'lucide-react';
+import { MapPin, Calendar, Star, Search, ArrowRight } from 'lucide-react';
 
 interface DestinationsPageProps {
   onNavigate: (route: PageRoute) => void;
 }
 
 export const DestinationsPage: React.FC<DestinationsPageProps> = ({ onNavigate }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredDestinations = DESTINATIONS.filter((dest) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      dest.name.toLowerCase().includes(q) ||
+      dest.state.toLowerCase().includes(q) ||
+      dest.tagline.toLowerCase().includes(q) ||
+      dest.description.toLowerCase().includes(q)
+    );
+  });
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-bold text-blue-600 dark:text-blue-400">
-          <MapPin className="w-4 h-4" /> Pilot Regions
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-bold text-rose-600 dark:text-rose-400">
+          <MapPin className="w-4 h-4 text-rose-500" /> Pilot Regions
         </div>
-        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
           Discover Himalayan <span className="ai-gradient-text">Destinations</span>
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          Book verified local agencies operating natively in Sikkim, Gangtok, Shimla, and surrounding Himalayan valleys.
+        <p className="text-sm text-slate-600 dark:text-slate-300">
+          Book verified local agencies operating natively in Sikkim, Gangtok, Shimla, Manali, and surrounding Himalayan valleys.
         </p>
+
+        {/* DESTINATION SEARCH INPUT BAR */}
+        <div className="relative max-w-lg mx-auto pt-2">
+          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 mt-1" />
+          <input
+            type="text"
+            placeholder="Search destination (e.g. Gangtok, Shimla, Manali, Ladakh)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-rose-500 shadow-xl shadow-rose-500/5"
+          />
+        </div>
       </div>
 
       {/* Destinations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {DESTINATIONS.map((dest) => (
+        {filteredDestinations.map((dest) => (
           <div
             key={dest.id}
             className="glass-card glass-card-hover rounded-3xl overflow-hidden flex flex-col justify-between"
@@ -52,7 +77,7 @@ export const DestinationsPage: React.FC<DestinationsPageProps> = ({ onNavigate }
               </div>
 
               <div className="p-6 space-y-4">
-                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {dest.description}
                 </p>
 
@@ -61,31 +86,20 @@ export const DestinationsPage: React.FC<DestinationsPageProps> = ({ onNavigate }
                   <span>Best Time to Visit: {dest.bestTimeToVisit}</span>
                 </div>
 
-                <div className="space-y-2">
-                  <span className="text-xs font-bold uppercase text-gray-400 block">Top Experiences</span>
-                  <div className="flex flex-wrap gap-2">
-                    {dest.popularActivities.map((act, i) => (
-                      <span key={i} className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
-                        • {act}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <span>{dest.agencyCount} Native Local Agencies</span>
+                  <span>{dest.packageCount}+ Verified Packages</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 pt-0 border-t border-gray-100 dark:border-gray-800/60 mt-4 flex items-center justify-between">
-              <div>
-                <span className="text-[10px] uppercase font-bold text-gray-400 block">Starting Package</span>
-                <span className="text-2xl font-black text-gray-900 dark:text-white">₹{dest.startingPrice.toLocaleString()}</span>
-              </div>
-
+            <div className="p-6 pt-0">
               <button
                 onClick={() => onNavigate('ai-planner')}
-                className="px-5 py-3 rounded-xl text-xs font-bold text-white ai-gradient-bg shadow-md active:scale-95 transition-all flex items-center gap-2"
+                className="w-full py-3.5 rounded-2xl text-xs font-extrabold text-white btn-primary-glow flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span>Create Request</span>
+                <span>Request Custom Trip for {dest.name}</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>

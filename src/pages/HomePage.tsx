@@ -14,7 +14,8 @@ import {
   ChevronDown, 
   ChevronUp, 
   Building2,
-  Award
+  Award,
+  Search
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -24,7 +25,9 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   // Quick Search Bar State
   const [selectedDest, setSelectedDest] = useState('Sikkim & Gangtok');
+  const [selectedDate, setSelectedDate] = useState('2026-10-15');
   const [travelerCount, setTravelerCount] = useState('2 Travellers');
+  const [destSearchQuery, setDestSearchQuery] = useState('');
   const [openFaqId, setOpenFaqId] = useState<string | null>('faq-1');
 
   return (
@@ -44,7 +47,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
             </span>
             <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
-            <span>AI-Powered Local Travel Marketplace • <strong>Zero Commission Markups</strong></span>
+            <span>AI-Powered Local Travel Marketplace</span>
             <span className="bg-gradient-to-r from-rose-500 to-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold shadow-sm">Live</span>
           </div>
 
@@ -81,14 +84,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   </select>
                 </div>
 
-                {/* Dates Picker Simulation */}
+                {/* Interactive Travel Dates Picker */}
                 <div className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 text-left hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
                   <label className="block text-[11px] uppercase font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <CalendarDays className="w-3.5 h-3.5 text-blue-500" /> Travel Dates
                   </label>
-                  <span className="block font-bold text-slate-900 dark:text-white text-sm mt-1">
-                    Flexible / Oct 2026
-                  </span>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="w-full bg-transparent font-bold text-slate-900 dark:text-white text-sm focus:outline-none cursor-pointer mt-1"
+                  />
                 </div>
 
                 {/* Travellers Selector */}
@@ -149,26 +155,49 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
       {/* PILOT DESTINATIONS SHOWCASE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10">
           <div>
-            <div className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">
+            <div className="text-xs font-extrabold uppercase tracking-widest text-rose-500 mb-1">
               Explore Destinations
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
               Current Pilot Destinations
             </h2>
           </div>
-          <button 
-            onClick={() => onNavigate('destinations')}
-            className="mt-4 md:mt-0 flex items-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 hover:gap-3 transition-all"
-          >
-            <span>View All Destinations</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+
+          {/* DYNAMIC DESTINATION SEARCH INPUT */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative flex-grow md:w-72">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search destination (e.g. Gangtok, Shimla, Manali)..."
+                value={destSearchQuery}
+                onChange={(e) => setDestSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-rose-500 shadow-sm"
+              />
+            </div>
+            <button 
+              onClick={() => onNavigate('destinations')}
+              className="hidden sm:flex items-center gap-2 text-xs font-extrabold text-rose-600 dark:text-rose-400 hover:gap-3 transition-all whitespace-nowrap"
+            >
+              <span>View All</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {DESTINATIONS.map((dest) => (
+          {DESTINATIONS.filter((dest) => {
+            if (!destSearchQuery.trim()) return true;
+            const q = destSearchQuery.toLowerCase();
+            return (
+              dest.name.toLowerCase().includes(q) ||
+              dest.state.toLowerCase().includes(q) ||
+              dest.tagline.toLowerCase().includes(q) ||
+              dest.description.toLowerCase().includes(q)
+            );
+          }).map((dest) => (
             <div
               key={dest.id}
               onClick={() => onNavigate('ai-planner')}
@@ -453,28 +482,71 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
 
-      {/* BECOME AN AGENCY BANNER */}
+      {/* BECOME AN AGENCY ULTRA-PREMIUM BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-card rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 text-white flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
-          <div className="space-y-4 text-center lg:text-left max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold">
-              <Building2 className="w-4 h-4" /> Agency Partner Network
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold">
-              Are You a Local Travel Agency in Sikkim or Shimla?
-            </h2>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Join 50+ verified local travel agencies receiving high-intent trip request leads directly from travellers. Zero listing setup fees.
-            </p>
-          </div>
+        <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950/90 to-slate-950 border border-purple-500/30 shadow-2xl">
+          
+          {/* Ambient Light Blob */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-rose-500/30 via-purple-500/20 to-transparent blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-blue-500/20 via-indigo-500/20 to-transparent blur-3xl rounded-full pointer-events-none" />
 
-          <button
-            onClick={() => onNavigate('become-agency')}
-            className="px-8 py-4 rounded-2xl text-sm font-bold text-slate-900 bg-white hover:bg-slate-100 shadow-xl shadow-white/10 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
-          >
-            <span>Register Your Agency</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
+            
+            <div className="space-y-5 text-center lg:text-left max-w-2xl">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold border border-purple-500/30">
+                <Building2 className="w-4 h-4 text-rose-400" />
+                <span>Verified Partner Network</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              </div>
+
+              {/* Title */}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+                Grow Your Agency with <span className="bg-gradient-to-r from-rose-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent">Direct Customer Leads.</span>
+              </h2>
+
+              {/* Description */}
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                Join <strong>50+ verified local travel agencies</strong> in Sikkim & Shimla receiving high-intent trip requests directly from travellers. Zero listing setup fees & guaranteed escrow payouts.
+              </p>
+
+              {/* Feature Checklist Pills */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-semibold text-slate-200">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Zero Listing Fees</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10">
+                  <ShieldCheck className="w-4 h-4 text-blue-400" />
+                  <span>Razorpay Escrow Payouts</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10">
+                  <TrendingDown className="w-4 h-4 text-rose-400" />
+                  <span>Direct Customer Quotes</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-4 w-full sm:w-auto shrink-0">
+              <button
+                onClick={() => onNavigate('become-agency')}
+                className="px-8 py-4 rounded-2xl text-sm font-extrabold text-slate-900 bg-white hover:bg-slate-100 shadow-xl shadow-white/15 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer group"
+              >
+                <span>Register Your Agency</span>
+                <ArrowRight className="w-4 h-4 text-slate-900 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('become-agency')}
+                className="px-8 py-3.5 rounded-2xl text-xs font-bold text-white bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 transition-all text-center cursor-pointer"
+              >
+                Calculate Monthly Earnings
+              </button>
+            </div>
+
+          </div>
         </div>
       </section>
 
