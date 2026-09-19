@@ -237,7 +237,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-gray-400 block">Starting From</span>
-                    <span className="text-lg font-black text-gray-900 dark:text-white">₹{dest.startingPrice.toLocaleString()}</span>
+                    <span className="text-lg font-black text-gray-900 dark:text-white">₹{dest.startingPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                   <span className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     <ArrowRight className="w-4 h-4" />
@@ -384,11 +384,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   <span className="text-[10px] uppercase font-bold text-gray-400 block">Price / Person</span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-black text-gray-900 dark:text-white">
-                      ₹{pkg.pricePerPerson.toLocaleString()}
+                      ₹{pkg.pricePerPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </span>
                     {pkg.originalPrice && (
                       <span className="text-xs text-gray-400 line-through">
-                        ₹{pkg.originalPrice.toLocaleString()}
+                        ₹{pkg.originalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                       </span>
                     )}
                   </div>

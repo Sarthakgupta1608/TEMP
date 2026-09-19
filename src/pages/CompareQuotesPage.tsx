@@ -100,9 +100,9 @@ export const CompareQuotesPage: React.FC<CompareQuotesPageProps> = ({ onNavigate
                 <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/80 space-y-1">
                   <div className="flex items-baseline justify-between">
                     <span className="text-[11px] uppercase font-bold text-gray-500">Total Quote Price</span>
-                    <span className="text-2xl font-black text-gray-900 dark:text-white">₹{quote.totalPrice.toLocaleString()}</span>
+                    <span className="text-2xl font-black text-gray-900 dark:text-white">₹{quote.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
-                  <div className="text-[11px] text-gray-400 text-right">₹{quote.pricePerPerson.toLocaleString()} per person (3 pax)</div>
+                  <div className="text-[11px] text-gray-400 text-right">₹{quote.pricePerPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })} per person (3 pax)</div>
                 </div>
 
                 {/* AI Summary Banner */}
@@ -197,7 +197,7 @@ export const CompareQuotesPage: React.FC<CompareQuotesPageProps> = ({ onNavigate
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Booking Confirmed & Escrow Held!</h3>
                 <p className="text-xs text-gray-600 dark:text-gray-300">
-                  Booking Code: <strong className="text-blue-600">TRV-2026-SK892</strong>. Your payment of ₹{selectedQuoteForBooking.totalPrice.toLocaleString()} is securely held in Razorpay Escrow.
+                  Booking Code: <strong className="text-blue-600">TRV-2026-SK892</strong>. Your payment of ₹{selectedQuoteForBooking.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })} is securely held in Razorpay Escrow.
                 </p>
                 <div className="pt-2">
                   <button
@@ -230,7 +230,7 @@ export const CompareQuotesPage: React.FC<CompareQuotesPageProps> = ({ onNavigate
                   </div>
                   <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-2 font-bold text-sm">
                     <span>Total Amount Payable</span>
-                    <span className="text-blue-600 dark:text-blue-400">₹{selectedQuoteForBooking.totalPrice.toLocaleString()}</span>
+                    <span className="text-blue-600 dark:text-blue-400">₹{selectedQuoteForBooking.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
 

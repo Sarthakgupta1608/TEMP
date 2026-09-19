@@ -173,7 +173,7 @@ export const AITripPlannerPage: React.FC<AITripPlannerPageProps> = ({ onNavigate
             <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3">
               <div className="flex justify-between items-center text-xs font-bold">
                 <span className="text-slate-600 dark:text-slate-300">Max Budget Limit Per Head</span>
-                <span className="text-rose-600 dark:text-rose-400 text-lg font-black">₹{tripData.budgetPerHead.toLocaleString()}</span>
+                <span className="text-rose-600 dark:text-rose-400 text-lg font-black">₹{tripData.budgetPerHead.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
               <input
                 type="range"

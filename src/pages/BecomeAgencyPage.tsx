@@ -65,7 +65,7 @@ export const BecomeAgencyPage: React.FC<BecomeAgencyPageProps> = ({ onNavigate }
             <div>
               <div className="flex justify-between text-xs font-bold mb-2 text-gray-700 dark:text-gray-300">
                 <span>Average Package Price</span>
-                <span className="text-blue-600 font-extrabold">₹{avgTicketPrice.toLocaleString()}</span>
+                <span className="text-blue-600 font-extrabold">₹{avgTicketPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
               <input
                 type="range"
@@ -81,7 +81,7 @@ export const BecomeAgencyPage: React.FC<BecomeAgencyPageProps> = ({ onNavigate }
 
           <div className="glass-card rounded-2xl p-6 text-center space-y-2 bg-slate-900 text-white shadow-xl">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Estimated Monthly Revenue</span>
-            <span className="text-4xl font-black text-emerald-400">₹{estimatedEarnings.toLocaleString()}</span>
+            <span className="text-4xl font-black text-emerald-400">₹{estimatedEarnings.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
             <span className="text-[11px] text-slate-400 block pt-2">*After 10% platform commission</span>
           </div>
 

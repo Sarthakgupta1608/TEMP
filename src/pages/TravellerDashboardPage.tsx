@@ -274,7 +274,7 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                     <div key={q.id} className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-white">{q.agencyName}</span>
-                        <span className="text-xs font-black text-rose-400">₹{q.totalPrice.toLocaleString()}</span>
+                        <span className="text-xs font-black text-rose-400">₹{q.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                       </div>
                       <p className="text-[11px] text-slate-400 line-clamp-2">{q.hotelCategory} • {q.vehicleType}</p>
                       <button
@@ -423,7 +423,7 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                     <h3 className="font-bold text-sm text-white">{pkg.title}</h3>
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-400">{pkg.destination}</span>
-                      <span className="font-bold text-white">₹{pkg.pricePerPerson.toLocaleString()} / head</span>
+                      <span className="font-bold text-white">₹{pkg.pricePerPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })} / head</span>
                     </div>
                   </div>
                 ))}

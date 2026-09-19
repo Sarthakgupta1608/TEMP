@@ -67,7 +67,7 @@ export const ExplorePackagesPage: React.FC<ExplorePackagesPageProps> = ({ onNavi
         <div>
           <div className="flex items-center justify-between text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
             <span>Max Budget Per Person</span>
-            <span className="text-blue-600 dark:text-blue-400 font-extrabold">₹{maxPrice.toLocaleString()}</span>
+            <span className="text-blue-600 dark:text-blue-400 font-extrabold">₹{maxPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
           </div>
           <input
             type="range"
@@ -142,7 +142,7 @@ export const ExplorePackagesPage: React.FC<ExplorePackagesPageProps> = ({ onNavi
               <div>
                 <span className="text-[10px] uppercase font-bold text-gray-400 block">Price / Person</span>
                 <span className="text-2xl font-black text-gray-900 dark:text-white">
-                  ₹{pkg.pricePerPerson.toLocaleString()}
+                  ₹{pkg.pricePerPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                 </span>
               </div>
 
@@ -208,7 +208,7 @@ export const ExplorePackagesPage: React.FC<ExplorePackagesPageProps> = ({ onNavi
             <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
               <div>
                 <span className="text-[10px] uppercase font-bold text-gray-400 block">Total Price</span>
-                <span className="text-2xl font-black text-gray-900 dark:text-white">₹{selectedPkg.pricePerPerson.toLocaleString()}</span>
+                <span className="text-2xl font-black text-gray-900 dark:text-white">₹{selectedPkg.pricePerPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
 
               <button

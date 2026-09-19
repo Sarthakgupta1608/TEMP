@@ -317,7 +317,7 @@ export const AgencyDashboardPage: React.FC<AgencyDashboardPageProps> = ({ onNavi
                     <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
                     <h3 className="text-xl font-bold text-white">Quote Submitted to Traveller!</h3>
                     <p className="text-xs text-slate-400">
-                      Your quote of ₹{quoteData.totalPrice.toLocaleString()} for REQ-8902 is now live in the traveller comparison matrix.
+                      Your quote of ₹{quoteData.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })} for REQ-8902 is now live in the traveller comparison matrix.
                     </p>
                     <button
                       onClick={() => setQuoteSubmitted(false)}
