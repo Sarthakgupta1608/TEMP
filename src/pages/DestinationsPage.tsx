@@ -33,7 +33,7 @@ export const DestinationsPage: React.FC<DestinationsPageProps> = ({ onNavigate }
           Discover Himalayan <span className="ai-gradient-text">Destinations</span>
         </h1>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Book verified local agencies operating natively in Sikkim, Gangtok, Shimla, Manali, and surrounding Himalayan valleys.
+          Explore our curated Himalayan destinations and find the perfect trip for you.
         </p>
 
         {/* DESTINATION SEARCH INPUT BAR */}

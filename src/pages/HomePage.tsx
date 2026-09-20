@@ -53,13 +53,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
           {/* Iconic Brand Main Title */}
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight max-w-4xl mx-auto leading-[1.05]">
-            <span className="bg-gradient-to-r from-rose-500 via-purple-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">TRAVELLER</span>
+            <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 bg-clip-text text-transparent drop-shadow-sm">TRAVELLER</span>
           </h1>
 
-          {/* New Subtitle */}
-          <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
-            Skip agency markups. Describe your dream itinerary in seconds, get transparent itemized quotes directly from verified mountain travel experts, compared & summarized by AI.
-          </p>
+
+
 
           {/* AIRBNB-STYLE SEARCH & AI WIZARD CARD */}
           <div className="max-w-4xl mx-auto pt-2">

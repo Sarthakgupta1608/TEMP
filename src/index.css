@@ -107,45 +107,45 @@ h1, h2, h3, h4, h5, h6 {
 .glass-card-hover:hover {
   transform: translateY(-5px);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
-  border-color: rgba(225, 29, 72, 0.35);
+  border-color: rgba(37, 99, 235, 0.25);
 }
 
 .dark .glass-card-hover:hover {
-  border-color: rgba(244, 63, 94, 0.5);
-  box-shadow: 0 25px 50px -12px rgba(244, 63, 94, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.15);
 }
 
 /* Startup UI Gradient Utilities */
 .ai-gradient-text {
-  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #f43f5e 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #0ea5e9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .ai-gradient-text {
-  background: linear-gradient(135deg, #c084fc 0%, #60a5fa 50%, #fb7185 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #38bdf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .ai-gradient-bg {
-  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #f43f5e 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #0ea5e9 100%);
 }
 
 .ai-glow-shadow {
-  box-shadow: 0 0 35px -5px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 35px -5px rgba(37, 99, 235, 0.25);
 }
 
 .btn-primary-glow {
-  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #9333ea 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
   color: white;
-  box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
   transition: all 0.3s ease;
 }
 
 .btn-primary-glow:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 35px -5px rgba(244, 63, 94, 0.55);
+  box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.4);
 }
 
 /* Custom Scrollbar */
