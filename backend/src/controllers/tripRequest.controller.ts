@@ -1,11 +1,13 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { TripRequestService } from '../services/tripRequest.service';
 import { AIService } from '../services/ai.service';
+import { AgencyService } from '../services/agency.service';
 import { sendSuccess } from '../utils/response';
 import { AuthRequest } from '../middleware/authGuard';
+import { getParam } from '../utils/params';
 
 export class TripRequestController {
-  static async extractAIIntent(req: AuthRequest, res: Response, next: NextFunction) {
+  static async extractAIIntent(req: Request, res: Response, next: NextFunction) {
     try {
       const { rawPrompt } = req.body;
       const spec = await AIService.extractTripIntent(rawPrompt || 'Trip request');
@@ -17,7 +19,7 @@ export class TripRequestController {
 
   static async createTripRequest(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const userId = req.user?.id || 'rohan-verma-seed-id';
+      const userId = req.user!.id;
       const tripRequest = await TripRequestService.createTripRequest(userId, req.body);
       return sendSuccess(res, tripRequest, 'Trip request published to local agencies', 201);
     } catch (error) {
@@ -27,7 +29,8 @@ export class TripRequestController {
 
   static async getQuotesForRequest(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const quotes = await TripRequestService.getQuotesForRequest(req.params.id);
+      const id = getParam(req, 'id');
+      const quotes = await TripRequestService.getQuotesForRequest(id);
       return sendSuccess(res, quotes, 'Quotes fetched with AI comparison matrix');
     } catch (error) {
       next(error);
@@ -36,8 +39,8 @@ export class TripRequestController {
 
   static async submitAgencyQuote(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const agencyId = req.user?.agencyId || 'agency-seed-id-101';
-      const quote = await TripRequestService.submitAgencyQuote(agencyId, req.body);
+      const agency = await AgencyService.resolveAgency(req.user!.id, req.user!.agencyId);
+      const quote = await TripRequestService.submitAgencyQuote(agency.id, req.body);
       return sendSuccess(res, quote, 'Custom quotation submitted to traveller', 201);
     } catch (error) {
       next(error);

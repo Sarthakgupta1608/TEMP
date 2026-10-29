@@ -10,7 +10,7 @@ async function main() {
   const passwordHash = await bcrypt.hash('Password123!', 10);
 
   // 1. Seed Admin User
-  const adminUser = await prisma.user.upsert({
+  const _adminUser = await prisma.user.upsert({
     where: { email: 'admin@traveller.app' },
     update: {},
     create: {
@@ -45,6 +45,27 @@ async function main() {
           fullName: 'Rohan Verma',
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
           bio: 'Avid Himalayan Traveller',
+        },
+      },
+    },
+  });
+
+  // 2b. Seed Traveller User 2 (Ananya Sharma)
+  const _travellerUser2 = await prisma.user.upsert({
+    where: { email: 'ananya@example.com' },
+    update: {},
+    create: {
+      email: 'ananya@example.com',
+      phone: '+919876543211',
+      passwordHash,
+      role: 'TRAVELLER',
+      status: 'ACTIVE',
+      emailVerified: true,
+      profile: {
+        create: {
+          fullName: 'Ananya Sharma',
+          avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+          bio: 'Mountain Explorer & Photographer',
         },
       },
     },
@@ -194,6 +215,29 @@ async function main() {
         includedAccommodations: '4-Star Mountain View Resort in Gangtok',
         includedMeals: 'Daily Breakfast & Dinner',
         transportType: 'Private Innova / Xylo SUV',
+        isFeatured: true,
+      },
+    });
+  }
+
+  if (agencyOwner2.agency) {
+    await prisma.package.upsert({
+      where: { slug: '4d3n-royal-shimla-heritage-kufri' },
+      update: {},
+      create: {
+        agencyId: agencyOwner2.agency.id,
+        destinationId: shimlaDest.id,
+        title: '4D/3N Royal Shimla Heritage & Kufri Retreat',
+        slug: '4d3n-royal-shimla-heritage-kufri',
+        durationDays: 4,
+        durationNights: 3,
+        pricePerPerson: 12499,
+        originalPrice: 14999,
+        coverImage: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+        highlights: JSON.stringify(['Heritage Resort Stay', 'Kufri Fun World Activity Vouchers', 'Mall Road Guided Walk', 'Bonfire Night']),
+        includedAccommodations: 'Classic Heritage Hotel near Ridge',
+        includedMeals: 'All Breakfasts',
+        transportType: 'Private Sedan (Dzire / Etios)',
         isFeatured: true,
       },
     });

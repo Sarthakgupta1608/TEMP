@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type { PageRoute, TravellerTab } from '../types';
 import { PACKAGES, QUOTES } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
+import { ApiClient } from '../services/apiClient';
 import { 
   LayoutDashboard, 
   MapPin, 
@@ -20,7 +22,10 @@ import {
   Send, 
   Menu, 
   X, 
-  ArrowRight
+  ArrowRight,
+  RefreshCw,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 
 interface TravellerDashboardPageProps {
@@ -28,8 +33,47 @@ interface TravellerDashboardPageProps {
 }
 
 export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ onNavigate }) => {
+  const { sessions, logout } = useAuth();
+  const travellerUser = sessions.traveller;
+  const travellerName = travellerUser?.profile?.fullName || travellerUser?.email?.split('@')[0] || 'Traveller';
+  const travellerEmail = travellerUser?.email || '';
+  const travellerPhone = travellerUser?.profile?.phone || '';
+
   const [activeTab, setActiveTab] = useState<TravellerTab>('dashboard');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Bookings from API
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
+
+  const fetchBookings = useCallback(async () => {
+    try {
+      setLoadingBookings(true);
+      setBookingsError(null);
+      const data = await ApiClient.fetchMyBookings();
+      setBookings(Array.isArray(data) ? data : []);
+    } catch (err: any) {
+      setBookingsError(err?.message || 'Failed to fetch bookings');
+    } finally {
+      setLoadingBookings(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  // Split upcoming vs past
+  const now = new Date();
+  const upcomingBookings = bookings.filter((b) => {
+    const end = new Date(b.endDate);
+    return end >= now && b.status !== 'CANCELLED' && b.status !== 'COMPLETED';
+  });
+  const pastBookings = bookings.filter((b) => {
+    const end = new Date(b.endDate);
+    return end < now || b.status === 'COMPLETED' || b.status === 'CANCELLED';
+  });
 
   // Chat state
   const [chatMessages, setChatMessages] = useState([
@@ -81,6 +125,8 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
     { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
+  const totalEscrowSecured = bookings.reduce((sum, b) => sum + (b.grossAmount || 0), 0);
+
   return (
     <div className="min-h-screen flex bg-slate-900 text-slate-100 font-sans">
       
@@ -89,13 +135,11 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
         
         {/* User Badge */}
         <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-900 border border-slate-800">
-          <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
-            alt="Rohan Verma"
-            className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
-          />
+          <div className="w-10 h-10 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center font-bold text-sm border-2 border-blue-500">
+            {travellerName.charAt(0).toUpperCase()}
+          </div>
           <div className="overflow-hidden">
-            <h4 className="font-bold text-sm text-white truncate">Rohan Verma</h4>
+            <h4 className="font-bold text-sm text-white truncate">{travellerName}</h4>
             <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider block">Verified Traveller</span>
           </div>
         </div>
@@ -124,10 +168,19 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
         {/* Logout / Switch Portal */}
         <div className="pt-4 border-t border-slate-800 space-y-2">
           <button
+            onClick={() => {
+              logout('traveller');
+              onNavigate('login');
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-950/40 transition-colors"
+          >
+            <LogOut className="w-4 h-4" /> Sign Out (Traveller)
+          </button>
+          <button
             onClick={() => onNavigate('home')}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
           >
-            <LogOut className="w-4 h-4" /> Exit to Main Website
+            <ArrowRight className="w-4 h-4" /> Exit to Main Website
           </button>
         </div>
 
@@ -153,6 +206,14 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => fetchBookings()}
+              title="Refresh Bookings"
+              className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 ${loadingBookings ? 'animate-spin' : ''}`} />
+            </button>
+
             <button
               onClick={() => setActiveTab('notifications')}
               className="relative p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
@@ -183,6 +244,10 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                   <span className="font-bold text-white">Traveller Portal</span>
                   <button onClick={() => setMobileSidebarOpen(false)}><X className="w-5 h-5 text-slate-400" /></button>
                 </div>
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                  <p className="font-bold text-xs text-white truncate">{travellerName}</p>
+                  <p className="text-[10px] text-slate-400 truncate">{travellerEmail}</p>
+                </div>
                 <nav className="space-y-1">
                   {navItems.map((item) => (
                     <button
@@ -199,9 +264,20 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                 </nav>
               </div>
 
-              <button onClick={() => onNavigate('home')} className="flex items-center gap-2 text-xs text-slate-400">
-                <LogOut className="w-4 h-4" /> Back to Main Site
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    logout('traveller');
+                    onNavigate('login');
+                  }}
+                  className="w-full flex items-center gap-2 text-xs text-rose-400"
+                >
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </button>
+                <button onClick={() => onNavigate('home')} className="w-full flex items-center gap-2 text-xs text-slate-400">
+                  <ArrowRight className="w-4 h-4" /> Back to Main Site
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -218,19 +294,19 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                 <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
                   <span className="text-xs font-bold uppercase text-slate-400">Active Requests</span>
                   <div className="text-3xl font-black text-white">1</div>
-                  <span className="text-[11px] text-emerald-400 block font-semibold">3 Quotes Received</span>
+                  <span className="text-[11px] text-emerald-400 block font-semibold">Live Quotes Ready</span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                  <span className="text-xs font-bold uppercase text-slate-400">Booked Trips</span>
-                  <div className="text-3xl font-black text-white">1</div>
-                  <span className="text-[11px] text-blue-400 block font-semibold">5D/4N Sikkim (Oct 15)</span>
+                  <span className="text-xs font-bold uppercase text-slate-400">Total Bookings</span>
+                  <div className="text-3xl font-black text-white">{bookings.length}</div>
+                  <span className="text-[11px] text-blue-400 block font-semibold">{upcomingBookings.length} Upcoming</span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
                   <span className="text-xs font-bold uppercase text-slate-400">Escrow Secured</span>
-                  <div className="text-3xl font-black text-white">₹42,000</div>
-                  <span className="text-[11px] text-purple-400 block font-semibold">Held via Razorpay</span>
+                  <div className="text-3xl font-black text-white">₹{totalEscrowSecured.toLocaleString('en-IN')}</div>
+                  <span className="text-[11px] text-purple-400 block font-semibold">Held via Razorpay Escrow</span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
@@ -241,24 +317,44 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
               </div>
 
               {/* Active Trip Banner */}
-              <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900/40 via-purple-900/30 to-slate-900 border border-blue-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                <div className="space-y-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300">
-                    Upcoming Confirmed Trip
-                  </span>
-                  <h3 className="text-xl font-bold text-white">5D/4N Enchanting Sikkim & Nathula Expedition</h3>
-                  <p className="text-xs text-slate-300">
-                    Booked with <strong>Himalayan Footprints Local Agency</strong> • Travel Dates: <strong>15th Oct – 20th Oct 2026</strong>
-                  </p>
-                </div>
+              {upcomingBookings.length > 0 ? (
+                <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900/40 via-purple-900/30 to-slate-900 border border-blue-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300">
+                      Upcoming Confirmed Trip ({upcomingBookings[0].bookingCode})
+                    </span>
+                    <h3 className="text-xl font-bold text-white">
+                      {upcomingBookings[0].quote?.title || upcomingBookings[0].package?.title || 'Mountain Tour Package'}
+                    </h3>
+                    <p className="text-xs text-slate-300">
+                      Booked with <strong>{upcomingBookings[0].agency?.companyName || 'Local Agency'}</strong> • Travel Dates:{' '}
+                      <strong>
+                        {new Date(upcomingBookings[0].startDate).toLocaleDateString()} – {new Date(upcomingBookings[0].endDate).toLocaleDateString()}
+                      </strong>
+                    </p>
+                  </div>
 
-                <button
-                  onClick={() => setActiveTab('bookings')}
-                  className="px-6 py-3 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md whitespace-nowrap"
-                >
-                  View Booking Voucher
-                </button>
-              </div>
+                  <button
+                    onClick={() => setActiveTab('bookings')}
+                    className="px-6 py-3 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md whitespace-nowrap"
+                  >
+                    View Booking Voucher
+                  </button>
+                </div>
+              ) : (
+                <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-1">
+                    <h3 className="text-base font-bold text-white">No Upcoming Trips Booked</h3>
+                    <p className="text-xs text-slate-400">Compare customized agency quotes or select a curated package to book your next trip.</p>
+                  </div>
+                  <button
+                    onClick={() => onNavigate('compare-quotes')}
+                    className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 whitespace-nowrap"
+                  >
+                    Compare Quotes
+                  </button>
+                </div>
+              )}
 
               {/* Quotes Received Quick Comparison */}
               <div className="space-y-4">
@@ -293,44 +389,129 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
 
           {/* 2. MY TRIPS */}
           {activeTab === 'trips' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white">My Trips History & Itineraries</h2>
-
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                  <div>
-                    <span className="text-xs font-extrabold uppercase text-emerald-400">Confirmed Booking (Code: TRV-2026-SK892)</span>
-                    <h3 className="text-lg font-bold text-white">5D/4N Sikkim & Gangtok Expedition</h3>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">Active</span>
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white">My Trips History & Itineraries</h2>
+                  <p className="text-xs text-slate-400">All your active and completed journeys</p>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-400 block">Dates</span>
-                    <span className="font-bold text-white">15 Oct – 20 Oct 2026</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Assigned Driver</span>
-                    <span className="font-bold text-white">Tenzin Norbu (+91 98320 11223)</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Vehicle</span>
-                    <span className="font-bold text-white">Toyota Innova Crysta (SK-01-PA-8890)</span>
-                  </div>
-                </div>
-
-                {/* Day-by-Day Timeline */}
-                <div className="space-y-2 pt-2">
-                  <span className="text-xs font-bold text-slate-300 block">Itinerary Timeline</span>
-                  {QUOTES[0].itinerary.map((item) => (
-                    <div key={item.day} className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
-                      <span className="font-bold text-blue-400 block">Day {item.day}: {item.title}</span>
-                      <p className="text-slate-400 text-[11px]">{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
+                <button
+                  onClick={() => fetchBookings()}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 hover:bg-slate-700"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingBookings ? 'animate-spin' : ''}`} /> Refresh
+                </button>
               </div>
+
+              {loadingBookings ? (
+                <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  <span className="text-xs">Loading trips...</span>
+                </div>
+              ) : bookingsError ? (
+                <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-rose-400" />
+                    <span>{bookingsError}</span>
+                  </div>
+                  <button onClick={() => fetchBookings()} className="underline font-bold">Retry</button>
+                </div>
+              ) : bookings.length === 0 ? (
+                <div className="p-10 text-center rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+                  <Calendar className="w-12 h-12 text-slate-600 mx-auto" />
+                  <h3 className="text-base font-bold text-white">No Trips Booked Yet</h3>
+                  <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                    You have not booked any trips yet. Discover packages or get custom quotes from verified agencies.
+                  </p>
+                  <button
+                    onClick={() => onNavigate('compare-quotes')}
+                    className="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                  >
+                    Compare Quotes Now
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {/* UPCOMING TRIPS */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-blue-400">
+                      Upcoming Trips ({upcomingBookings.length})
+                    </h3>
+                    {upcomingBookings.length === 0 ? (
+                      <p className="text-xs text-slate-400 italic">No upcoming trips currently scheduled.</p>
+                    ) : (
+                      <div className="space-y-4">
+                        {upcomingBookings.map((b) => (
+                          <div key={b.id} className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+                            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                              <div>
+                                <span className="text-xs font-extrabold uppercase text-emerald-400">
+                                  Confirmed Booking (Code: {b.bookingCode})
+                                </span>
+                                <h3 className="text-lg font-bold text-white">
+                                  {b.quote?.title || b.package?.title || 'Mountain Tour Expedition'}
+                                </h3>
+                                <p className="text-xs text-slate-400">
+                                  Agency: <strong className="text-slate-200">{b.agency?.companyName || 'Verified Partner'}</strong>
+                                </p>
+                              </div>
+                              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">
+                                {b.status}
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                              <div>
+                                <span className="text-slate-400 block">Travel Dates</span>
+                                <span className="font-bold text-white">
+                                  {new Date(b.startDate).toLocaleDateString()} – {new Date(b.endDate).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block">Group Size</span>
+                                <span className="font-bold text-white">{b.pax} Guests</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block">Amount Escrow Secured</span>
+                                <span className="font-bold text-emerald-400">₹{b.grossAmount?.toLocaleString('en-IN')}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* PAST TRIPS / HISTORY */}
+                  <div className="space-y-4 pt-4 border-t border-slate-800">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                      Past Travel History ({pastBookings.length})
+                    </h3>
+                    {pastBookings.length === 0 ? (
+                      <p className="text-xs text-slate-400 italic">No past completed trips yet.</p>
+                    ) : (
+                      <div className="space-y-4">
+                        {pastBookings.map((b) => (
+                          <div key={b.id} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 opacity-80">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="text-xs font-mono text-slate-400">{b.bookingCode}</span>
+                                <h4 className="font-bold text-white">{b.quote?.title || b.package?.title || 'Tour'}</h4>
+                              </div>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300">
+                                Completed
+                              </span>
+                            </div>
+                            <div className="text-xs text-slate-400">
+                              Dates: {new Date(b.startDate).toLocaleDateString()} – {new Date(b.endDate).toLocaleDateString()} • {b.agency?.companyName} • ₹{b.grossAmount?.toLocaleString('en-IN')}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -434,41 +615,101 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
           {/* 6. BOOKINGS */}
           {activeTab === 'bookings' && (
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white">Confirmed Bookings & Vouchers</h2>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white">Confirmed Bookings & Vouchers</h2>
+                  <p className="text-xs text-slate-400">Live bookings fetched directly from your account</p>
+                </div>
+                <button
+                  onClick={() => fetchBookings()}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 hover:bg-slate-700"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingBookings ? 'animate-spin' : ''}`} /> Refresh
+                </button>
+              </div>
 
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                  <div>
-                    <span className="text-xs font-mono text-blue-400 font-bold">Booking Code: TRV-2026-SK892</span>
-                    <h3 className="text-lg font-bold text-white">Himalayan Footprints Local Agency</h3>
+              {loadingBookings ? (
+                <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  <span className="text-xs">Loading confirmed bookings...</span>
+                </div>
+              ) : bookingsError ? (
+                <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-rose-400" />
+                    <span>{bookingsError}</span>
                   </div>
+                  <button onClick={() => fetchBookings()} className="underline font-bold">Retry</button>
+                </div>
+              ) : bookings.length === 0 ? (
+                <div className="p-10 text-center rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+                  <CheckCircle2 className="w-12 h-12 text-slate-600 mx-auto" />
+                  <h3 className="text-base font-bold text-white">No Bookings Found</h3>
+                  <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                    You have not completed any bookings yet. Compare agency quotes to make your first booking!
+                  </p>
                   <button
-                    onClick={() => alert('Downloading PDF Voucher for TRV-2026-SK892...')}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white flex items-center gap-1.5"
+                    onClick={() => onNavigate('compare-quotes')}
+                    className="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
                   >
-                    <Download className="w-4 h-4 text-emerald-400" /> Voucher PDF
+                    Compare Quotes
                   </button>
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.map((b) => (
+                    <div key={b.id} className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
+                        <div>
+                          <span className="text-xs font-mono text-blue-400 font-bold block">
+                            Booking Code: {b.bookingCode}
+                          </span>
+                          <h3 className="text-lg font-bold text-white">
+                            {b.quote?.title || b.package?.title || 'Mountain Tour Booking'}
+                          </h3>
+                          <span className="text-xs text-slate-400">
+                            Agency: <strong className="text-slate-200">{b.agency?.companyName || 'Verified Agency'}</strong>
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">
+                            {b.status}
+                          </span>
+                          <button
+                            onClick={() => alert(`Downloading PDF Voucher for ${b.bookingCode}...`)}
+                            className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white flex items-center gap-1.5"
+                          >
+                            <Download className="w-4 h-4 text-emerald-400" /> Voucher PDF
+                          </button>
+                        </div>
+                      </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-400 block">Total Paid</span>
-                    <span className="font-bold text-white">₹42,000</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Payment Mode</span>
-                    <span className="font-bold text-white">Razorpay UPI</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Escrow Status</span>
-                    <span className="font-bold text-emerald-400">Funds Secured</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Hotel Check-In</span>
-                    <span className="font-bold text-white">15 Oct 2026</span>
-                  </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                        <div>
+                          <span className="text-slate-400 block">Total Amount</span>
+                          <span className="font-bold text-white">₹{b.grossAmount?.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block">Payment Mode</span>
+                          <span className="font-bold text-white">Razorpay Escrow</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block">Escrow Status</span>
+                          <span className="font-bold text-emerald-400">
+                            {b.payment?.escrowStatus || 'FUNDS SECURED'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block">Travel Dates</span>
+                          <span className="font-bold text-white">
+                            {new Date(b.startDate).toLocaleDateString()} – {new Date(b.endDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -490,17 +731,29 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800">
-                      <tr>
-                        <td className="py-3 font-mono">pay_Pz901189201</td>
-                        <td className="py-3 font-mono text-blue-400">TRV-2026-SK892</td>
-                        <td className="py-3 font-bold text-white">₹42,000</td>
-                        <td className="py-3">
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300">
-                            Escrow Hold
-                          </span>
-                        </td>
-                        <td className="py-3 text-slate-400">07 Aug 2026</td>
-                      </tr>
+                      {bookings.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="py-6 text-center text-slate-400">No payment records found</td>
+                        </tr>
+                      ) : (
+                        bookings.map((b) => (
+                          <tr key={b.id}>
+                            <td className="py-3 font-mono text-slate-300">
+                              {b.payment?.razorpayPaymentId || `pay_mock_${b.id.slice(0, 8)}`}
+                            </td>
+                            <td className="py-3 font-mono text-blue-400">{b.bookingCode}</td>
+                            <td className="py-3 font-bold text-white">₹{b.grossAmount?.toLocaleString('en-IN')}</td>
+                            <td className="py-3">
+                              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300">
+                                {b.payment?.escrowStatus || 'ESCROW HOLD'}
+                              </span>
+                            </td>
+                            <td className="py-3 text-slate-400">
+                              {new Date(b.createdAt).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -511,7 +764,7 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
           {/* 8. MESSAGES */}
           {activeTab === 'messages' && (
             <div className="space-y-4 max-w-3xl">
-              <h2 className="text-xl font-bold text-white">Chat with Himalayan Footprints Agency</h2>
+              <h2 className="text-xl font-bold text-white">Chat with Local Agency</h2>
 
               <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
@@ -624,15 +877,15 @@ export const TravellerDashboardPage: React.FC<TravellerDashboardPageProps> = ({ 
               <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 text-xs">
                 <div>
                   <label className="block font-bold mb-1">Full Name</label>
-                  <input type="text" defaultValue="Rohan Verma" className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800" />
+                  <input type="text" defaultValue={travellerName} className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800" />
                 </div>
                 <div>
                   <label className="block font-bold mb-1">Email</label>
-                  <input type="email" defaultValue="rohan@example.com" className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800" />
+                  <input type="email" defaultValue={travellerEmail} readOnly className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400" />
                 </div>
                 <div>
                   <label className="block font-bold mb-1">Phone</label>
-                  <input type="tel" defaultValue="+91 98765 43210" className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800" />
+                  <input type="tel" defaultValue={travellerPhone || '+91 98765 43210'} className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800" />
                 </div>
                 <button className="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold">Save Settings</button>
               </div>

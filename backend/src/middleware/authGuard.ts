@@ -32,7 +32,7 @@ export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction)
     const decoded = jwt.verify(token, config.jwt.accessSecret) as AuthenticatedUser;
     req.user = decoded;
     return next();
-  } catch (error) {
+  } catch {
     return sendError(res, 'Invalid or expired access token', 401, 'TOKEN_EXPIRED');
   }
 };
@@ -43,7 +43,10 @@ export const requireRole = (...allowedRoles: string[]) => {
       return sendError(res, 'Authentication required', 401, 'UNAUTHORIZED');
     }
 
-    if (!allowedRoles.includes(req.user.role)) {
+    const userRole = req.user.role.toUpperCase();
+    const normalizedAllowed = allowedRoles.map((r) => r.toUpperCase());
+
+    if (!normalizedAllowed.includes(userRole)) {
       return sendError(
         res,
         `Access denied. Requires one of the following roles: ${allowedRoles.join(', ')}`,

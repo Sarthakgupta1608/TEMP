@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { sendSuccess } from '../utils/response';
+import { getParam } from '../utils/params';
 
 export class AdminController {
   static async getAnalytics(req: Request, res: Response, next: NextFunction) {
@@ -32,7 +33,7 @@ export class AdminController {
 
   static async updateAgencyKyc(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = getParam(req, 'id');
       const { status } = req.body; // VERIFIED, REJECTED, SUSPENDED
 
       const updatedAgency = await prisma.agency.update({

@@ -1,23 +1,48 @@
 import React, { useState } from 'react';
 import type { PageRoute } from '../types';
-import { Compass, LogIn, Lock, Mail, CheckCircle2, Building2, User } from 'lucide-react';
+import { Compass, LogIn, Lock, Mail, CheckCircle2, Building2, User, ShieldAlert, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import type { PortalRole } from '../services/apiClient';
 
 interface LoginPageProps {
   onNavigate: (route: PageRoute) => void;
+  initialRole?: PortalRole;
+  returnRoute?: PageRoute;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
-  const [authRole, setAuthRole] = useState<'traveller' | 'agency'>('traveller');
+export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, initialRole = 'traveller', returnRoute }) => {
+  const { login } = useAuth();
+  const [authRole, setAuthRole] = useState<PortalRole>(initialRole);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSuccess(true);
-    setTimeout(() => {
-      onNavigate('home');
-    }, 1500);
+    setErrorMsg('');
+    setLoading(true);
+
+    try {
+      await login(authRole, { email, password });
+      setIsSuccess(true);
+      setTimeout(() => {
+        if (returnRoute) {
+          onNavigate(returnRoute);
+        } else if (authRole === 'traveller') {
+          onNavigate('traveller-dashboard');
+        } else if (authRole === 'agency') {
+          onNavigate('agency-dashboard');
+        } else {
+          onNavigate('admin-panel');
+        }
+      }, 700);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Login failed. Please verify credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,29 +60,50 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Role Toggle */}
-        <div className="grid grid-cols-2 gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl">
+        <div className="grid grid-cols-3 gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl">
           <button
-            onClick={() => setAuthRole('traveller')}
+            type="button"
+            onClick={() => { setAuthRole('traveller'); setErrorMsg(''); }}
             className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               authRole === 'traveller'
                 ? 'bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow-md'
                 : 'text-gray-500'
             }`}
           >
-            <User className="w-3.5 h-3.5" /> Traveller Account
+            <User className="w-3.5 h-3.5" /> Traveller
           </button>
 
           <button
-            onClick={() => setAuthRole('agency')}
+            type="button"
+            onClick={() => { setAuthRole('agency'); setErrorMsg(''); }}
             className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               authRole === 'agency'
                 ? 'bg-white dark:bg-gray-900 text-rose-500 shadow-md'
                 : 'text-gray-500'
             }`}
           >
-            <Building2 className="w-3.5 h-3.5" /> Agency Portal
+            <Building2 className="w-3.5 h-3.5" /> Agency
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setAuthRole('admin'); setErrorMsg(''); }}
+            className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              authRole === 'admin'
+                ? 'bg-white dark:bg-gray-900 text-purple-500 shadow-md'
+                : 'text-gray-500'
+            }`}
+          >
+            <ShieldAlert className="w-3.5 h-3.5" /> Admin
           </button>
         </div>
+
+        {errorMsg && (
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
 
         {isSuccess ? (
           <div className="py-8 text-center space-y-3">
@@ -67,28 +113,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-            
-            {/* Google OAuth Option */}
-            <button
-              type="button"
-              onClick={() => { setIsSuccess(true); setTimeout(() => onNavigate('home'), 1500); }}
-              className="w-full py-3 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 font-bold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2 transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.15C3.26 21.3 7.31 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.28 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.39l3.99-3.15z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.61l3.99 3.15c.95-2.85 3.6-4.96 6.72-4.96z"/>
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-
-            <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
-              <span className="flex-shrink mx-4 text-[10px] text-gray-400 uppercase tracking-wider">or sign in with email</span>
-              <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
-            </div>
-
             <div>
               <label className="block font-bold mb-1">Email Address</label>
               <div className="relative">
@@ -121,12 +145,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
             <button
               type="submit"
-              className={`w-full py-3.5 rounded-2xl text-white font-bold shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 ${
-                authRole === 'traveller' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-500 hover:bg-rose-600'
+              disabled={loading}
+              className={`w-full py-3.5 rounded-2xl text-white font-bold shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                authRole === 'traveller'
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : authRole === 'agency'
+                  ? 'bg-rose-500 hover:bg-rose-600'
+                  : 'bg-purple-600 hover:bg-purple-700'
               }`}
             >
               <LogIn className="w-4 h-4" />
-              <span>Sign In as {authRole === 'traveller' ? 'Traveller' : 'Agency Operator'}</span>
+              <span>
+                {loading
+                  ? 'Signing in...'
+                  : `Sign In as ${
+                      authRole === 'traveller' ? 'Traveller' : authRole === 'agency' ? 'Agency Operator' : 'Admin'
+                    }`}
+              </span>
             </button>
           </form>
         )}

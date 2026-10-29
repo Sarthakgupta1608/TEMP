@@ -137,15 +137,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary-glow {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #3b82f6 100%);
   color: white;
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.25);
   transition: all 0.3s ease;
 }
 
 .btn-primary-glow:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 12px 28px -5px rgba(59, 130, 246, 0.35);
 }
 
 /* Custom Scrollbar */
@@ -161,4 +161,37 @@ h1, h2, h3, h4, h5, h6 {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--brand-primary));
+}
+
+/* Floating Background Orb Animations */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -40px) scale(1.05); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(15px, -10px) scale(1.02); }
+}
+
+@keyframes float-medium {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.03); }
+  66% { transform: translate(25px, -35px) scale(0.97); }
+}
+
+@keyframes float-fast {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -25px); }
+}
+
+.orb-1 {
+  animation: float-slow 18s ease-in-out infinite;
+}
+
+.orb-2 {
+  animation: float-medium 14s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.orb-3 {
+  animation: float-fast 10s ease-in-out infinite;
+  animation-delay: -6s;
 }

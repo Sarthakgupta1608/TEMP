@@ -1,6 +1,14 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+    throw new Error('Fatal: JWT_ACCESS_SECRET and JWT_REFRESH_SECRET environment variables must be defined in production.');
+  }
+}
+
 export const config = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -8,8 +16,8 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL || 'file:./dev.db',
 
   jwt: {
-    accessSecret: process.env.JWT_ACCESS_SECRET || 'traveller_access_secret_key_2026',
-    refreshSecret: process.env.JWT_REFRESH_SECRET || 'traveller_refresh_secret_key_2026',
+    accessSecret: process.env.JWT_ACCESS_SECRET || 'dev_jwt_access_secret_only_for_local_development',
+    refreshSecret: process.env.JWT_REFRESH_SECRET || 'dev_jwt_refresh_secret_only_for_local_development',
     accessExpiry: '15m',
     refreshExpiry: '7d',
   },

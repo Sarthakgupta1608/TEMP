@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import type { PageRoute } from '../types';
-import { UserCheck, User, Building2, CheckCircle2 } from 'lucide-react';
+import { UserCheck, User, Building2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface SignupPageProps {
   onNavigate: (route: PageRoute) => void;
 }
 
 export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
+  const { register } = useAuth();
   const [role, setRole] = useState<'traveller' | 'agency'>('traveller');
   const [formData, setFormData] = useState({
     name: '',
@@ -17,13 +19,34 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
     region: 'Sikkim & Gangtok',
   });
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSuccess(true);
-    setTimeout(() => {
-      onNavigate(role === 'agency' ? 'become-agency' : 'ai-planner');
-    }, 1500);
+    setErrorMsg('');
+    setLoading(true);
+
+    try {
+      await register(role, {
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        role: role.toUpperCase(),
+        companyName: formData.companyName,
+        operatingRegion: formData.region,
+      });
+
+      setIsSuccess(true);
+      setTimeout(() => {
+        onNavigate(role === 'agency' ? 'agency-dashboard' : 'traveller-dashboard');
+      }, 700);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Signup failed. Please check inputs.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,7 +66,8 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
         {/* Role Toggle */}
         <div className="grid grid-cols-2 gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl">
           <button
-            onClick={() => setRole('traveller')}
+            type="button"
+            onClick={() => { setRole('traveller'); setErrorMsg(''); }}
             className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               role === 'traveller'
                 ? 'bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow-md'
@@ -54,7 +78,8 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
           </button>
 
           <button
-            onClick={() => setRole('agency')}
+            type="button"
+            onClick={() => { setRole('agency'); setErrorMsg(''); }}
             className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               role === 'agency'
                 ? 'bg-white dark:bg-gray-900 text-rose-500 shadow-md'
@@ -65,11 +90,18 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
           </button>
         </div>
 
+        {errorMsg && (
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
         {isSuccess ? (
           <div className="py-8 text-center space-y-3">
             <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Account Created!</h3>
-            <p className="text-xs text-gray-500">Redirecting to setup...</p>
+            <p className="text-xs text-gray-500">Redirecting to your dashboard...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
@@ -125,11 +157,12 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
             </div>
 
             <div>
-              <label className="block font-bold mb-1">Password</label>
+              <label className="block font-bold mb-1">Password (min 8 characters)</label>
               <input
                 type="password"
                 required
-                placeholder="At least 8 characters"
+                minLength={8}
+                placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none"
@@ -138,11 +171,12 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onNavigate }) => {
 
             <button
               type="submit"
-              className={`w-full py-3.5 rounded-2xl text-white font-bold shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 ${
+              disabled={loading}
+              className={`w-full py-3.5 rounded-2xl text-white font-bold shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 role === 'traveller' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
-              <span>Complete {role === 'traveller' ? 'Traveller' : 'Agency'} Signup</span>
+              <span>{loading ? 'Creating Account...' : `Complete ${role === 'traveller' ? 'Traveller' : 'Agency'} Signup`}</span>
             </button>
 
           </form>

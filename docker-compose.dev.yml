@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: builder
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:/data/dev.db
+      - FRONTEND_URL=http://localhost:5173
+      - PORT=5000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - traveller_data_dev:/data
+    ports:
+      - "5000:5000"
+    command: ["npx", "tsx", "watch", "src/server.ts"]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    environment:
+      - VITE_API_URL=http://localhost:5000/api/v1
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+volumes:
+  traveller_data_dev:
+    name: traveller_data_dev
+

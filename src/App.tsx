@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { SEOHead } from './components/layout/SEOHead';
 import { AIChatbotWidget } from './components/layout/AIChatbotWidget';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -32,9 +33,10 @@ const getRouteFromHash = (): PageRoute => {
   return VALID_ROUTES.includes(hash as PageRoute) ? (hash as PageRoute) : 'home';
 };
 
-export function App() {
+function AppContent() {
   const [currentRoute, setCurrentRouteState] = useState<PageRoute>(getRouteFromHash);
   const [darkMode, setDarkMode] = useState<boolean>(false);
+  const { sessions, loading } = useAuth();
 
   // Sync route with browser history (PushState & PopState for Undo / Redo Navigation)
   const handleNavigate = (route: PageRoute) => {
@@ -55,8 +57,9 @@ export function App() {
     window.addEventListener('popstate', handlePopState);
     
     // Set initial state if none exists
+    const initialRoute = getRouteFromHash();
     if (!window.history.state) {
-      window.history.replaceState({ route: currentRoute }, '', `#/${currentRoute}`);
+      window.history.replaceState({ route: initialRoute }, '', `#/${initialRoute}`);
     }
 
     return () => {
@@ -72,6 +75,19 @@ export function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  // Route protection redirect
+  useEffect(() => {
+    if (loading) return;
+
+    if (currentRoute === 'traveller-dashboard' && !sessions.traveller) {
+      handleNavigate('login');
+    } else if (currentRoute === 'agency-dashboard' && !sessions.agency) {
+      handleNavigate('login');
+    } else if (currentRoute === 'admin-panel' && !sessions.admin) {
+      handleNavigate('login');
+    }
+  }, [currentRoute, sessions, loading]);
 
   const handleToggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -162,6 +178,13 @@ export function App() {
 
   // Render Portals cleanly without marketing layout wrapper
   if (currentRoute === 'traveller-dashboard') {
+    if (!sessions.traveller && !loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+          <LoginPage onNavigate={handleNavigate} initialRole="traveller" />
+        </div>
+      );
+    }
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
@@ -171,6 +194,13 @@ export function App() {
   }
 
   if (currentRoute === 'agency-dashboard') {
+    if (!sessions.agency && !loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+          <LoginPage onNavigate={handleNavigate} initialRole="agency" />
+        </div>
+      );
+    }
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
@@ -180,6 +210,13 @@ export function App() {
   }
 
   if (currentRoute === 'admin-panel') {
+    if (!sessions.admin && !loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+          <LoginPage onNavigate={handleNavigate} initialRole="admin" />
+        </div>
+      );
+    }
     return (
       <>
         <SEOHead title={seo.title} description={seo.description} />
@@ -224,6 +261,14 @@ export function App() {
       <AIChatbotWidget onNavigate={handleNavigate} />
 
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

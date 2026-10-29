@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PackageService } from '../services/package.service';
 import { sendSuccess } from '../utils/response';
+import { getParam } from '../utils/params';
 
 export class PackageController {
   static async getPackages(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +21,8 @@ export class PackageController {
 
   static async getPackageById(req: Request, res: Response, next: NextFunction) {
     try {
-      const pkg = await PackageService.getPackageById(req.params.id);
+      const id = getParam(req, 'id');
+      const pkg = await PackageService.getPackageById(id);
       return sendSuccess(res, pkg, 'Package details fetched');
     } catch (error) {
       next(error);

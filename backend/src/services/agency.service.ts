@@ -1,6 +1,18 @@
 import { prisma } from '../lib/prisma';
 
 export class AgencyService {
+  static async resolveAgency(userId: string, tokenAgencyId?: string) {
+    if (tokenAgencyId) {
+      const agency = await prisma.agency.findUnique({ where: { id: tokenAgencyId } });
+      if (agency) return agency;
+    }
+    const agency = await prisma.agency.findUnique({ where: { ownerId: userId } });
+    if (!agency) {
+      throw { statusCode: 404, message: 'Agency profile not found for this user', errorCode: 'AGENCY_NOT_FOUND' };
+    }
+    return agency;
+  }
+
   static async getLeadsForAgency(agencyId: string) {
     const agency = await prisma.agency.findUnique({ where: { id: agencyId } });
     const region = agency?.operatingRegion || 'Sikkim & Gangtok';

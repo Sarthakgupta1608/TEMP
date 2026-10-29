@@ -35,20 +35,24 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       
       {/* HERO SECTION */}
       <section className="relative pt-8 pb-16 overflow-hidden">
-        {/* Ambient Soft Light Gradient Background Blur */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[950px] h-[500px] bg-gradient-to-tr from-rose-300/30 via-indigo-200/40 to-sky-300/30 blur-[140px] rounded-full -z-10 pointer-events-none" />
+        {/* Animated Floating Background Orbs */}
+        <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+          <div className="orb-1 absolute top-[-80px] left-[10%] w-[500px] h-[500px] bg-blue-200/25 dark:bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="orb-2 absolute top-[60px] right-[5%] w-[400px] h-[400px] bg-sky-200/30 dark:bg-sky-500/8 rounded-full blur-[100px]" />
+          <div className="orb-3 absolute bottom-[-40px] left-[40%] w-[350px] h-[350px] bg-indigo-100/25 dark:bg-indigo-500/8 rounded-full blur-[110px]" />
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
           
           {/* Fresh Light Startup Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 dark:bg-slate-900/80 border border-rose-200 dark:border-rose-500/30 text-xs font-bold text-rose-600 dark:text-rose-400 shadow-md shadow-rose-500/5 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 dark:bg-slate-900/80 border border-blue-200 dark:border-blue-500/30 text-xs font-bold text-blue-600 dark:text-blue-400 shadow-md shadow-blue-500/5 backdrop-blur-md">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
             </span>
-            <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
+            <Sparkles className="w-4 h-4 text-blue-500 animate-pulse" />
             <span>AI-Powered Local Travel Marketplace</span>
-            <span className="bg-gradient-to-r from-rose-500 to-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold shadow-sm">Live</span>
+            <span className="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold shadow-sm">Live</span>
           </div>
 
           {/* Iconic Brand Main Title */}
@@ -68,7 +72,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 {/* Destination Dropdown */}
                 <div className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 text-left hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
                   <label className="block text-[11px] uppercase font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-rose-500" /> Destination
+                    <MapPin className="w-3.5 h-3.5 text-blue-500" /> Destination
                   </label>
                   <select 
                     value={selectedDest} 
@@ -134,7 +138,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <span><strong>50+</strong> Verified Agencies</span>
             </div>
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-              <TrendingDown className="w-4 h-4 text-rose-500" />
+              <TrendingDown className="w-4 h-4 text-blue-500" />
               <span>Save <strong>₹45L+</strong> Middleman Fees</span>
             </div>
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
@@ -155,7 +159,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10">
           <div>
-            <div className="text-xs font-extrabold uppercase tracking-widest text-rose-500 mb-1">
+            <div className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-1">
               Explore Destinations
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
